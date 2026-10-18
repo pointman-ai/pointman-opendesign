@@ -1,0 +1,66 @@
+# Open Design (https://github.com/nexu-io/open-design): page and app designs from a brief, made by
+# Claude Code under Open Design's own daemon on this node. Format: docs/dev/extensions.md.
+
+[extension]
+id = "opendesign"
+name = "Open Design"
+version = "0.1.1"
+publisher = "aurelio"
+summary = "Designs from a brief: a page to open and a still, each revision a new version of the same card."
+node = ">=0.1,<1"
+platforms = ["macos-arm64", "macos-x86_64", "linux-x86_64", "linux-arm64"]
+
+[run]
+command = ["python", "-m", "pointman_opendesign"]
+runtime = "python3.12"
+
+[permissions]
+network = true
+
+[settings]
+type = "object"
+
+[settings.properties.path]
+type = "string"
+title = "Open Design's folder"
+description = "A built checkout of nexu-io/open-design (it has apps/daemon/dist/cli.js)."
+default = "~/open-design"
+
+[settings.properties.node]
+type = "string"
+title = "Node"
+description = "The node binary to run Open Design's daemon with (it wants Node 24)."
+default = "node"
+
+[settings.properties.plugin]
+type = "string"
+title = "Plugin"
+default = "od-default"
+
+[settings.properties.still]
+type = "boolean"
+title = "Post a still"
+description = "A picture of the page with its scripts run (macOS), shown on its card."
+default = true
+
+[settings.properties.still_width]
+type = "integer"
+title = "Still width"
+enum = [1280, 1440, 1920]
+default = 1440
+
+[[commands]]
+kind = "opendesign.make"
+title = "Make a design"
+params = { type = "object", required = ["brief"], properties = { brief = { type = "string", minLength = 1, description = "What to design, as you'd brief a designer." }, design_md = { type = "string", description = "The design system to follow (a DESIGN.md's text)." }, project = { type = "string", pattern = "^[a-z0-9][a-z0-9-]{0,47}$", description = "Revise this design (the project an earlier one gave back); left out, a new design." }, thread_id = { type = "integer", description = "Post the result in this thread." } } }
+cancellable = true
+outputs = ["page", "image"]
+
+[[tools]]
+name = "opendesign_make"
+command = "opendesign.make"
+description = "Design a page or app screen from a brief with Open Design on this machine (about 15 min). The page and a still post in the thread; to revise it, run again with the project it gave back, and it becomes a new version of the same card."
+
+[[events]]
+name = "opendesign.status"
+description = "Whether Open Design is found and its daemon running here: its folder and version."
