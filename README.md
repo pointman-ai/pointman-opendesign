@@ -23,7 +23,7 @@ pointman add opendesign
 
 ## Commands
 
-Agents get it as the `opendesign_make` tool, or call it on a machine with `run_on_machine`.
+Agents get it as the `opendesign_make` tool, or call it on a machine with `create_job`.
 
 | Kind | Params | What |
 |---|---|---|
