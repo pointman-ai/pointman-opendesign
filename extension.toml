@@ -4,7 +4,7 @@
 [extension]
 id = "opendesign"
 name = "Open Design"
-version = "0.2.0"
+version = "0.2.1"
 publisher = "aurelio"
 summary = "Designs from a brief: a page to open and a still, each revision a new version of the same card."
 node = ">=0.3.0"
