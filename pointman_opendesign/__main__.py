@@ -14,6 +14,7 @@ Claude Code under Open Design's own daemon, which this extension starts and keep
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -312,10 +313,17 @@ def make(job):
         why = end.get("failureDetail") or end.get("failureCategory") or end.get("status") or "it didn't finish"
         raise RuntimeError(f"Open Design's run ended {end.get('status')}: {why}")
     folder = daemon.data / "projects" / project
-    pages = [folder / a for a in end.get("artifactPaths") or [] if str(a).endswith(".html")]
-    page = next((x for x in pages if x.is_file()), folder / "index.html")
-    if not page.is_file():
+    # a revision writes a file beside the first, and the run can name both: the newest is this run's
+    pages = {folder / a for a in end.get("artifactPaths") or [] if str(a).endswith(".html")}
+    page = max((x for x in pages | set(folder.glob("*.html")) if x.is_file()),
+               key=lambda x: x.stat().st_mtime_ns, default=None)
+    if page is None:
         raise RuntimeError(f"the run made no page in {folder}")
+    result = {"project": project, "run": run_id, "revised": revised, "seconds": round(time.monotonic() - started)}
+    sha, last = hashlib.sha256(page.read_bytes()).hexdigest(), daemon.state / "published" / f"{project}.sha256"
+    if revised and last.is_file() and last.read_text().strip() == sha:
+        job.progress(1.0, "unchanged: the page is the one published last, so no new version")
+        return {**result, "unchanged": True}
     # Open Design names the page as it likes (hello-card.html): one name on the board, so a revision
     # is the same card
     meta = {"file": project, "project": project, "revised": revised, "publish_as": "index.html"}
@@ -323,7 +331,9 @@ def make(job):
     picture = still(page, job.work / f"{project}.png") if ext.settings.get("still", True) else None
     if picture is not None:
         job.output(picture, kind="image", role="poster", meta=meta)
-    return {"project": project, "run": run_id, "revised": revised, "seconds": round(time.monotonic() - started)}
+    last.parent.mkdir(parents=True, exist_ok=True)
+    last.write_text(sha)
+    return result
 
 
 @ext.on_start
