@@ -34,7 +34,8 @@ Agents get it as the `opendesign_make` tool, or call it on a machine with `creat
 - **Revising:** pass the `project` it gave back, with a new brief (and a new `design_md` if the design
   system changed). The same Open Design project is revised and published at the same path,
   `opendesign/<project>/index.html`. The page published is the one the run wrote (the project's newest);
-  a revision that leaves it as last published posts nothing and says `unchanged: true`.
+  a revision that leaves it as last published posts no new version: one line in the thread says so, and
+  the result has `unchanged: true`.
 
 ## How it runs
 

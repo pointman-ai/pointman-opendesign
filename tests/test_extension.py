@@ -113,8 +113,10 @@ class RevisionTests(unittest.TestCase):
             (tmp / "bin" / name).chmod(0o755)
         self.path = os.environ["PATH"]
         os.environ["PATH"] = f"{tmp / 'bin'}{os.pathsep}{self.path}"
+        self.posts = []
+        posted = lambda r: self.posts.append((r.thread.id, r.text)) or types.BoardPostResponse()  # noqa: E731
         self.node = StandInNode(ROOT, settings={"path": str(tmp / "od"), "node": str(tmp / "bin" / "fake-od"),
-                                                "still": False}, state_dir=tmp)
+                                                "still": False}, state_dir=tmp, methods={"board.post": posted})
         self.node.start()
 
     def tearDown(self):
@@ -132,10 +134,13 @@ class RevisionTests(unittest.TestCase):
         self.assertEqual(Path(second.outputs[0].path).read_text(), "Bigger title")
         self.assertTrue(second.result["revised"])
 
-        third = self.node.run("opendesign.make", {"brief": "Bigger title", "project": project})
+        self.assertEqual(self.posts, [])
+        third = self.node.run("opendesign.make", {"brief": "Bigger title", "project": project, "thread_id": 412})
         self.assertEqual(third.outputs, [])
         self.assertTrue(third.result["unchanged"])
         self.assertIn("unchanged", third.progress[-1].stage)
+        self.assertEqual(self.posts, [("thr_412", "Open Design left the page as it was: no new version.")])
+        self.assertTrue(self.node.manifest["permissions"]["post"])     # the node refuses board.post without it
 
 
 if __name__ == "__main__":

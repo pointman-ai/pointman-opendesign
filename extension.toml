@@ -7,7 +7,7 @@ name = "Open Design"
 version = "0.2.0"
 publisher = "aurelio"
 summary = "Designs from a brief: a page to open and a still, each revision a new version of the same card."
-node = ">=0.2.0"
+node = ">=0.3.0"
 platforms = ["macos-arm64", "macos-x86_64", "linux-x86_64", "linux-arm64"]
 
 [run]
@@ -16,6 +16,7 @@ runtime = "python3.12"
 
 [permissions]
 network = true
+post = true
 
 [settings]
 type = "object"
