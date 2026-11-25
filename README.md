@@ -2,7 +2,7 @@
 
 A Pointman extension that designs pages and app screens from a brief, with
 [Open Design](https://github.com/nexu-io/open-design) and Claude Code on a node. The page posts in the
-thread as a page card you can open, with a still of it as its picture. To revise a design, ask again with
+channel as a page card you can open, with a still of it as its picture. To revise a design, ask again with
 the project it gave back: the revision is a new version of the same card.
 
 Python (standard library only), run by the node on Python 3.12.
@@ -27,14 +27,14 @@ Agents get it as the `opendesign_make` tool, or call it on a machine with `creat
 
 | Kind | Params | What |
 |---|---|---|
-| `opendesign.make` | `brief`, `design_md?`, `project?`, `thread_id?` | A design from a brief, as you'd brief a designer, following `design_md` (a DESIGN.md's text) if given. A run takes about 15 minutes, with its progress on the request. Cancellable |
+| `opendesign.make` | `brief`, `design_md?`, `project?`, `channel_id?` | A design from a brief, as you'd brief a designer, following `design_md` (a DESIGN.md's text) if given. A run takes about 15 minutes, with its progress on the request. Cancellable |
 
 - **The result** is the page (`index.html`, with whatever it uses from its folder) and its still, and
   `{project, run, revised, seconds}`.
 - **Revising:** pass the `project` it gave back, with a new brief (and a new `design_md` if the design
   system changed). The same Open Design project is revised and published at the same path,
   `opendesign/<project>/index.html`. The page published is the one the run wrote (the project's newest);
-  a revision that leaves it as last published posts no new version: one line in the thread says so, and
+  a revision that leaves it as last published posts no new version: one line in the channel says so, and
   the result has `unchanged: true`.
 
 ## How it runs
