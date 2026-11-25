@@ -4,10 +4,10 @@
 [extension]
 id = "opendesign"
 name = "Open Design"
-version = "0.2.1"
+version = "0.3.0"
 publisher = "aurelio"
 summary = "Designs from a brief: a page to open and a still, each revision a new version of the same card."
-node = ">=0.3.0"
+node = ">=0.5.0"
 platforms = ["macos-arm64", "macos-x86_64", "linux-x86_64", "linux-arm64"]
 
 [run]
@@ -53,14 +53,14 @@ default = 1440
 [[commands]]
 kind = "opendesign.make"
 title = "Make a design"
-params = { type = "object", required = ["brief"], properties = { brief = { type = "string", minLength = 1, description = "What to design, as you'd brief a designer." }, design_md = { type = "string", description = "The design system to follow (a DESIGN.md's text)." }, project = { type = "string", pattern = "^[a-z0-9][a-z0-9-]{0,47}$", description = "Revise this design (the project an earlier one gave back); left out, a new design." }, thread_id = { type = "integer", description = "Post the result in this thread." } } }
+params = { type = "object", required = ["brief"], properties = { brief = { type = "string", minLength = 1, description = "What to design, as you'd brief a designer." }, design_md = { type = "string", description = "The design system to follow (a DESIGN.md's text)." }, project = { type = "string", pattern = "^[a-z0-9][a-z0-9-]{0,47}$", description = "Revise this design (the project an earlier one gave back); left out, a new design." }, channel_id = { type = "integer", description = "Post the result in this channel." } } }
 cancellable = true
 outputs = ["page", "image"]
 
 [[tools]]
 name = "opendesign_make"
 command = "opendesign.make"
-description = "Design a page or app screen from a brief with Open Design on this machine (about 15 min). The page and a still post in the thread; to revise it, run again with the project it gave back, and it becomes a new version of the same card."
+description = "Design a page or app screen from a brief with Open Design on this machine (about 15 min). The page and a still post in the channel; to revise it, run again with the project it gave back, and it becomes a new version of the same card."
 
 [[events]]
 name = "opendesign.status"

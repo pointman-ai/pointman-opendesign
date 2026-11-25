@@ -324,8 +324,8 @@ def make(job):
     sha, last = hashlib.sha256(page.read_bytes()).hexdigest(), daemon.state / "published" / f"{project}.sha256"
     if revised and last.is_file() and last.read_text().strip() == sha:
         job.progress(1.0, "unchanged: the page is the one published last, so no new version")
-        if p.get("thread_id"):                      # where its outputs would have posted
-            ext.request(types.BoardPostRequest(thread=types.ThreadRef(id=f"thr_{p['thread_id']}"),
+        if p.get("channel_id"):                      # where its outputs would have posted
+            ext.request(types.BoardPostRequest(channel=types.ChannelRef(id=f"ch_{p['channel_id']}"),
                                                text="Open Design left the page as it was: no new version."))
         return {**result, "unchanged": True}
     # Open Design names the page as it likes (hello-card.html): one name on the board, so a revision
